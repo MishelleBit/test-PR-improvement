@@ -1,0 +1,35 @@
+yaml
+name: Update PR Title with JIRA Ticket Title
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  update-pr-title:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Extract JIRA Ticket from Branch Name
+        id: extract_jira
+        run: |
+          BRANCH_NAME=$(echo "${{ github.head_ref }}" | grep -oE '[A-Z]+-[0-9]+')
+          echo "JIRA_TICKET=${BRANCH_NAME}" >> $GITHUB_ENV
+
+      - name: Get JIRA Ticket Title
+        id: get_jira_title
+        uses: ./.github/actions/get-jira-title
+        with:
+          jira_ticket: ${{ env.JIRA_TICKET }}
+          jira_base_url: ${{ secrets.JIRA_BASE_URL }}
+          jira_api_token: ${{ secrets.JIRA_API_TOKEN }}
+          jira_email: ${{ secrets.JIRA_EMAIL }}
+
+      - name: Update PR Title
+        run: |
+          NEW_TITLE="${{ steps.get_jira_title.outputs.jira_title }} - ${{ github.event.pull_request.title }}"
+          gh pr edit ${{ github.event.pull_request.number }} --title "$NEW_TITLE"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

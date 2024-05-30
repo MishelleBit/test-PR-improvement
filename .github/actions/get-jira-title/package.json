@@ -1,0 +1,11 @@
+{
+  "name": "get-jira-title",
+  "version": "1.0.0",
+  "description": "Get the JIRA ticket title from the JIRA API",
+  "main": "index.js",
+  "dependencies": {
+    "@actions/core": "^1.2.6",
+    "@actions/github": "^2.2.0",
+    "axios": "^0.21.1"
+  }
+}

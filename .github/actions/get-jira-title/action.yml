@@ -1,0 +1,13 @@
+yaml
+name: 'Get JIRA Ticket Title'
+description: 'Get the JIRA ticket title from the JIRA API'
+inputs:
+  jira_ticket:
+    description: 'The JIRA ticket ID'
+    required: true
+outputs:
+  jira_title:
+    description: 'The JIRA ticket title'
+runs:
+  using: 'node12'
+  main: 'index.js'
